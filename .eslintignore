@@ -1,0 +1,10 @@
+# dependencies
+/node_modules
+
+# production
+/build
+
+# configs
+*.config.ts
+*.config.cjs
+*.config.mjs
