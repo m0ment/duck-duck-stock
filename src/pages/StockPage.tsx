@@ -17,7 +17,19 @@ const StockPage = ({ symbol }: StockPageProps) => {
   if (error) {
     return (
       <PageLayout>
-        <p>Ups... Something went wrong</p>
+        <div className='mx-auto max-w-screen-xl py-16 px-6'>
+          <div className='mx-auto max-w-screen-sm text-center'>
+            <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-emerald-500'>
+              500
+            </h1>
+            <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900'>
+              Something didn&apos;t work quite well.
+            </p>
+            <p className='mb-4 text-lg font-light text-gray-500'>
+              Maybe next time you will be more lucky.
+            </p>
+          </div>
+        </div>
       </PageLayout>
     );
   }
