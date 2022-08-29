@@ -6,16 +6,16 @@ interface StockPageProps {
 }
 
 const StockPage = ({ symbol }: StockPageProps) => {
-  const { isLoading, data, error } = useFetch<TimeSeriesDailyResponse>(
+  const { data, error } = useFetch<TimeSeriesDailyResponse>(
     timeSeriesDailyURL(symbol)
   );
 
-  if (isLoading) {
-    return <p>Loading...</p>;
+  if (error) {
+    return <p>Ups... Something went wrong</p>;
   }
 
-  if (error || !data) {
-    return <p>Ups... Something went wrong</p>;
+  if (!data) {
+    return <p>Loading...</p>;
   }
 
   if ('Error Message' in data) {

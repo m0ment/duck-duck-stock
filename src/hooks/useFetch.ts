@@ -1,7 +1,6 @@
 import { useEffect, useReducer, useRef } from 'react';
 
 interface State<T> {
-  isLoading: boolean;
   data?: T;
   error?: Error;
 }
@@ -19,17 +18,17 @@ const useFetch = <T>(url?: string) => {
   const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
     switch (action.type) {
       case 'loading':
-        return { isLoading: true };
+        return {};
       case 'fetched':
-        return { data: action.payload, isLoading: false };
+        return { data: action.payload };
       case 'error':
-        return { error: action.payload, isLoading: false };
+        return { error: action.payload };
       default:
         return state;
     }
   };
 
-  const [state, dispatch] = useReducer(fetchReducer, { isLoading: false });
+  const [state, dispatch] = useReducer(fetchReducer, {});
 
   useEffect(() => {
     // Do nothing if the url is not given
