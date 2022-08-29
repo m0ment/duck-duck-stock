@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
-import HomePage from './pages/HomePage';
-import StockPage from './pages/StockPage';
+import HomePage from '@pages/HomePage';
+import StockPage from '@pages/StockPage';
 
 const App = () => {
   const [searchParams] = useSearchParams();
