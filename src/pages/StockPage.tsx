@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 import useFetch from '@hooks/useFetch';
+import { SpinnerIcon } from '@assets/icons';
 import type { TimeSeriesDailyResponse } from 'types/TimeSeriesDailyResponse';
 
 interface StockPageProps {
@@ -24,7 +25,12 @@ const StockPage = ({ symbol }: StockPageProps) => {
   if (!data) {
     return (
       <PageLayout>
-        <p>Loading...</p>
+        <div className='flex h-full items-center justify-center'>
+          <div role='status'>
+            <SpinnerIcon className='h-16 w-16 animate-spin fill-emerald-500 text-gray-200' />
+            <span className='sr-only'>Loading...</span>
+          </div>
+        </div>
       </PageLayout>
     );
   }
@@ -46,8 +52,8 @@ const StockPage = ({ symbol }: StockPageProps) => {
 
 const PageLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div>
-      <header className='flex items-center border border-b-gray-300 bg-white px-4 pt-4 pb-3'>
+    <div className='flex h-screen flex-col'>
+      <header className='flex shrink-0 items-center border border-b-gray-200 bg-white px-4 pt-4 pb-3 ring-1 ring-black/5'>
         <Link className='flex h-full w-16 items-center justify-center' to='/'>
           <img src='/duck.svg' className='h-10 w-10' />
         </Link>
@@ -59,7 +65,7 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
           />
         </div>
       </header>
-      <main>{children}</main>
+      <main className='flex-grow'>{children}</main>
     </div>
   );
 };
