@@ -5,7 +5,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <button onClick={() => setSearchParams({ symbol: '1234' })}>
+      <button onClick={() => setSearchParams({ symbol: 'IBM' })}>
         Click me
       </button>
     </div>
