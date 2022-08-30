@@ -28,13 +28,13 @@
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.1.1",
+    "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@tailwindcss/forms": "^0.5.2",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.35.1",
-    "@typescript-eslint/parser": "^5.35.1",
+    "@typescript-eslint/eslint-plugin": "^5.36.0",
+    "@typescript-eslint/parser": "^5.36.0",
     "@vitejs/plugin-react": "^2.0.1",
     "autoprefixer": "^10.4.8",
     "eslint": "^8.23.0",
