@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom';
 
 import useFetch from '@hooks/useFetch';
 import { SpinnerIcon } from '@assets/icons';
+import StockSearchbar from '@components/StockSearchbar';
 import type { TimeSeriesDailyResponse } from 'types/TimeSeriesDailyResponse';
 
 interface StockPageProps {
-  symbol: string;
+  query: string;
 }
 
-const StockPage = ({ symbol }: StockPageProps) => {
+const StockPage = ({ query }: StockPageProps) => {
   const { data, error } = useFetch<TimeSeriesDailyResponse>(
-    timeSeriesDailyURL(symbol)
+    timeSeriesDailyURL(query)
   );
 
   if (error) {
@@ -50,7 +51,7 @@ const StockPage = ({ symbol }: StockPageProps) => {
   if ('Error Message' in data) {
     return (
       <PageLayout>
-        <p>Invalid Symbol... Please try again</p>;
+        <p>Invalid Symbol... Please try again</p>
       </PageLayout>
     );
   }
@@ -64,18 +65,12 @@ const StockPage = ({ symbol }: StockPageProps) => {
 
 const PageLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className='flex h-screen flex-col'>
-      <header className='flex shrink-0 items-center border border-b-gray-200 bg-white px-4 pt-4 pb-3 ring-1 ring-black/5'>
-        <Link className='flex h-full w-16 items-center justify-center' to='/'>
+    <div className='flex h-screen w-screen flex-col divide-y divide-gray-300 bg-white'>
+      <header className='flex shrink-0 items-center py-4 pl-16'>
+        <Link to='/' className='flex h-full w-16 items-center justify-center'>
           <img src='/duck.svg' className='h-10 w-10' />
         </Link>
-        <div className='ml-4 h-11 w-[70%] max-w-lg rounded-xl border border-gray-200 bg-white shadow-sm focus-within:shadow-md hover:shadow-md'>
-          <input
-            className='h-full w-full border-0 bg-transparent p-0 pr-2 pl-4 text-gray-800 placeholder:text-gray-400 focus:ring-0'
-            type='text'
-            placeholder='Search...'
-          />
-        </div>
+        <StockSearchbar className='ml-4 w-[72%] max-w-lg' />
       </header>
       <main className='flex-grow'>{children}</main>
     </div>

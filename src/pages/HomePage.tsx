@@ -1,6 +1,8 @@
+import StockSearchbar from '@components/StockSearchbar';
+
 const HomePage = () => {
   return (
-    <main className='relative h-screen w-screen bg-gray-50'>
+    <main className='relative h-screen w-screen bg-neutral-50'>
       {/* Container */}
       <div className='absolute inset-x-0 top-[20%] flex flex-col items-center'>
         {/* Duck */}
@@ -16,6 +18,7 @@ const HomePage = () => {
           <span className='text-gray-800'>DuckDuck</span>
           <span className='text-emerald-500'>Stock</span>
         </h1>
+        <StockSearchbar className='mt-12 w-[72%] max-w-lg' />
       </div>
     </main>
   );
