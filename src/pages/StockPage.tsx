@@ -1,10 +1,17 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { entries, sortBy } from 'lodash';
+import { parseISO } from 'date-fns';
 
+import useElementSize from '@hooks/useElementSize';
 import useFetch from '@hooks/useFetch';
 import { SpinnerIcon } from '@assets/icons';
+import StockChart, { StockDataPoint } from '@components/StockChart';
 import StockSearchbar from '@components/StockSearchbar';
-import type { TimeSeriesDailyResponse } from 'types/TimeSeriesDailyResponse';
+import type {
+  TimeSeriesDaily,
+  TimeSeriesDailyResponse,
+} from 'types/TimeSeriesDailyResponse';
 
 interface StockPageProps {
   query: string;
@@ -14,6 +21,16 @@ const StockPage = ({ query }: StockPageProps) => {
   const { data, error } = useFetch<TimeSeriesDailyResponse>(
     timeSeriesDailyURL(query)
   );
+
+  const [chartContainerRef, chartContainerSize] = useElementSize();
+
+  const stockData = useMemo(() => {
+    if (!data || 'Error Message' in data) {
+      return [];
+    }
+
+    return mapTimeSeriesDailyToStockSeries(data['Time Series (Daily)']);
+  }, [data]);
 
   if (error) {
     return (
@@ -58,7 +75,20 @@ const StockPage = ({ query }: StockPageProps) => {
 
   return (
     <PageLayout>
-      <pre>{JSON.stringify(data['Time Series (Daily)'], null, 2)}</pre>
+      <div className='flex h-full divide-x divide-gray-200'>
+        <div className='w-96 pl-16 pt-4'>TODO</div>
+        <div className='flex-1  p-4'>
+          <div
+            ref={chartContainerRef}
+            className='flex h-full items-center justify-center'
+          >
+            <StockChart
+              data={stockData}
+              width={chartContainerSize.width * 0.8}
+            />
+          </div>
+        </div>
+      </div>
     </PageLayout>
   );
 };
@@ -81,11 +111,25 @@ const timeSeriesDailyURL = (symbol: string) => {
   const searchParams = new URLSearchParams({
     apikey: import.meta.env.VITE_ALPHA_VANTAGE_API_KEY,
     function: 'TIME_SERIES_DAILY',
-    outputsize: 'full',
+    outputsize: 'compact',
     symbol,
   });
 
   return `https://www.alphavantage.co/query?${searchParams.toString()}`;
 };
+
+export const mapTimeSeriesDailyToStockSeries = (
+  timeSeriesDaily: TimeSeriesDaily
+): StockDataPoint[] =>
+  sortBy(
+    entries(timeSeriesDaily).map(([day, data]) => ({
+      day: parseISO(day),
+      open: Number(data['1. open']),
+      hight: Number(data['2. high']),
+      low: Number(data['3. low']),
+      close: Number(data['4. close']),
+    })),
+    (point) => point.day
+  );
 
 export default StockPage;
