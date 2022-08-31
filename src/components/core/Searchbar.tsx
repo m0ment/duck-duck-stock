@@ -67,7 +67,7 @@ const Searchbar = <T,>({
     <div
       ref={containerRef}
       className={cx(
-        'group divide-y divide-gray-300 overflow-hidden rounded-xl border border-gray-300 bg-white shadow-md hover:shadow-lg focus:shadow-lg',
+        'divide-y divide-gray-300 overflow-hidden rounded-xl border border-gray-300 bg-white shadow-md focus-within:shadow-lg hover:shadow-lg',
         className
       )}
     >
@@ -103,12 +103,12 @@ const Searchbar = <T,>({
       </div>
 
       {!isEmpty && showResults && results.length > 0 && (
-        <ul className='max-h-52 overflow-y-auto py-2 group-focus-within:block'>
+        <ul className='max-h-52 overflow-y-auto py-2'>
           {results.map((item, index) => (
             <li
               key={index}
               onClick={() => handleItemSelect(item, index)}
-              className='px-4 py-1 text-gray-800 hover:bg-gray-100 hover:font-semibold'
+              className='cursor-pointer px-4 py-1 text-gray-800 hover:bg-gray-100 hover:font-semibold'
             >
               {renderItem(item)}
             </li>

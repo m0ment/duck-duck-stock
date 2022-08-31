@@ -65,12 +65,12 @@ const StockPage = ({ query }: StockPageProps) => {
 
 const PageLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className='flex h-screen w-screen flex-col divide-y divide-gray-300 bg-white'>
-      <header className='flex shrink-0 items-center py-4 pl-16'>
-        <Link to='/' className='flex h-full w-16 items-center justify-center'>
+    <div className='flex h-screen w-screen flex-col divide-y divide-gray-200 bg-white'>
+      <header className='relative py-4 pl-16'>
+        <Link to='/' className='flex w-16 items-center justify-center py-[3px]'>
           <img src='/duck.svg' className='h-10 w-10' />
         </Link>
-        <StockSearchbar className='ml-4 w-[72%] max-w-lg' />
+        <StockSearchbar className='absolute top-4 ml-20 w-[72%] max-w-lg' />
       </header>
       <main className='flex-grow'>{children}</main>
     </div>
