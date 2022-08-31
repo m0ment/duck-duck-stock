@@ -12,10 +12,11 @@ interface StockResult {
 }
 
 interface StockSearchbarProps {
+  autoFocus?: boolean;
   className?: string;
 }
 
-const StockSearchbar = ({ className }: StockSearchbarProps) => {
+const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
   const [searchParams] = useSearchParams();
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -52,6 +53,7 @@ const StockSearchbar = ({ className }: StockSearchbarProps) => {
         name='q'
         value={query}
         results={results}
+        autoFocus={autoFocus}
         onItemSelect={handleItemSelect}
         onChange={setQuery}
         renderItem={(item) => (

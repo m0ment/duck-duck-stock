@@ -18,7 +18,7 @@ const HomePage = () => {
           <span className='text-gray-800'>DuckDuck</span>
           <span className='text-emerald-500'>Stock</span>
         </h1>
-        <StockSearchbar className='mt-12 w-[72%] max-w-lg' />
+        <StockSearchbar autoFocus className='mt-4 w-[72%] max-w-lg' />
       </div>
     </main>
   );

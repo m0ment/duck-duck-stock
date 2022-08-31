@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import cx from 'classix';
 
 import useOnClickOutside from '@hooks/useOnClickOutside';
@@ -8,6 +8,7 @@ interface SearchbarProps<T> {
   value: string;
   results: T[];
   name?: string;
+  autoFocus?: boolean;
   placeholder?: string;
   className?: string;
   renderItem: (item: T) => ReactNode;
@@ -20,6 +21,7 @@ const Searchbar = <T,>({
   value,
   results,
   name,
+  autoFocus,
   placeholder,
   className,
   renderItem,
@@ -36,6 +38,12 @@ const Searchbar = <T,>({
 
   // Hide the results when we click outside
   useOnClickOutside(containerRef, () => setShowResults(false));
+
+  useEffect(() => {
+    if (autoFocus) {
+      inputRef.current?.focus();
+    }
+  }, [autoFocus]);
 
   const handleChange = (value: string) => {
     onChange && onChange(value);
