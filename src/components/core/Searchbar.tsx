@@ -1,6 +1,7 @@
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import cx from 'classix';
 
+import useOnClickOutside from '@hooks/useOnClickOutside';
 import { SearchIcon, XMarkIcon } from '@assets/icons';
 
 interface SearchbarProps<T> {
@@ -26,16 +27,23 @@ const Searchbar = <T,>({
   onChange,
   onSubmit,
 }: SearchbarProps<T>) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [showResults, setShowResults] = useState(false);
+
   const isEmpty = !value;
+
+  // Hide the results when we click outside
+  useOnClickOutside(containerRef, () => setShowResults(false));
 
   const handleChange = (value: string) => {
     onChange && onChange(value);
   };
 
-  const handleSubmit = () => {
-    onSubmit && onSubmit(value);
+  const handleFocus = () => {
+    // Show the results when we focus on input
+    setShowResults(true);
   };
 
   const handleClear = () => {
@@ -45,12 +53,19 @@ const Searchbar = <T,>({
     handleChange('');
   };
 
+  const handleSubmit = () => {
+    onSubmit && onSubmit(value);
+  };
+
   const handleItemSelect = (item: T, index: number) => {
+    setShowResults(false);
+
     onItemSelect && onItemSelect(item, index);
   };
 
   return (
     <div
+      ref={containerRef}
       className={cx(
         'group divide-y divide-gray-300 overflow-hidden rounded-xl border border-gray-300 bg-white shadow-md hover:shadow-lg focus:shadow-lg',
         className
@@ -65,9 +80,11 @@ const Searchbar = <T,>({
           className='h-full flex-1 border-0 bg-transparent p-0 pl-4 text-gray-900 placeholder:text-gray-400 focus:ring-0'
           value={value}
           onChange={(event) => handleChange(event.target.value)}
+          onFocus={handleFocus}
         />
         <div className='inline-flex h-full shrink-0'>
           <button
+            type='button'
             disabled={isEmpty}
             onClick={handleClear}
             className='inline-flex w-8 items-center justify-center text-black/50 transition-colors duration-200 hover:text-black disabled:text-transparent'
@@ -85,8 +102,8 @@ const Searchbar = <T,>({
         </div>
       </div>
 
-      {!isEmpty && results.length > 0 && (
-        <ul className='hidden max-h-52 overflow-y-auto py-2 group-focus-within:block'>
+      {!isEmpty && showResults && results.length > 0 && (
+        <ul className='max-h-52 overflow-y-auto py-2 group-focus-within:block'>
           {results.map((item, index) => (
             <li
               key={index}
