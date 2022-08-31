@@ -9,16 +9,17 @@ import { SpinnerIcon } from '@assets/icons';
 import StockChart from '@components/StockChart';
 import StockSearchbar from '@components/StockSearchbar';
 import StockOverview from '@components/StockOverview';
+import DatePicker from '@components/core/DatePicker';
 
 interface StockPageProps {
-  query: string;
+  symbol: string;
 }
 
-const StockPage = ({ query }: StockPageProps) => {
+const StockPage = ({ symbol }: StockPageProps) => {
   const [chartContainerRef, chartContainerSize] = useElementSize();
 
-  const { data, isError, isLoading } = useQuery(['stock-details', query], () =>
-    Promise.all([getCompanyOverview(query), getStockTimeSeries(query)])
+  const { data, isError, isLoading } = useQuery(['stock-details', symbol], () =>
+    Promise.all([getCompanyOverview(symbol), getStockTimeSeries(symbol)])
   );
 
   if (isLoading) {
@@ -65,6 +66,7 @@ const StockPage = ({ query }: StockPageProps) => {
             ref={chartContainerRef}
             className='flex h-full items-center justify-center'
           >
+            <DatePicker />
             <StockChart
               data={stockTimeSeries}
               width={chartContainerSize.width * 0.8}

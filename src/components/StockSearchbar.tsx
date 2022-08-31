@@ -21,7 +21,7 @@ const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [query, setQuery] = useState(searchParams.get('q') ?? '');
+  const [query, setQuery] = useState(searchParams.get('symbol') ?? '');
   const debouncedQuery = useDebounce(query, 275);
 
   const { data: searchResults } = useQuery(
@@ -39,7 +39,7 @@ const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
   return (
     <form ref={formRef} className={className} method='GET' action='/'>
       <Searchbar
-        name='q'
+        name='symbol'
         value={query}
         results={searchResults}
         autoFocus={autoFocus}

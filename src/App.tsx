@@ -6,9 +6,9 @@ import StockPage from '@pages/StockPage';
 const App = () => {
   const [searchParams] = useSearchParams();
 
-  const query = searchParams.get('q');
-  if (query) {
-    return <StockPage query={query} />;
+  const symbol = searchParams.get('symbol');
+  if (symbol) {
+    return <StockPage symbol={symbol} />;
   }
 
   return <HomePage />;
