@@ -1,38 +1,40 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { entries, sortBy } from 'lodash';
-import { parseISO } from 'date-fns';
 
 import useElementSize from '@hooks/useElementSize';
-import useFetch from '@hooks/useFetch';
+import getStockTimeSeries from '@api/getStockTimeSeries';
 import { SpinnerIcon } from '@assets/icons';
-import StockChart, { StockDataPoint } from '@components/StockChart';
+import StockChart from '@components/StockChart';
 import StockSearchbar from '@components/StockSearchbar';
-import type {
-  TimeSeriesDaily,
-  TimeSeriesDailyResponse,
-} from 'types/TimeSeriesDailyResponse';
 
 interface StockPageProps {
   query: string;
 }
 
 const StockPage = ({ query }: StockPageProps) => {
-  const { data, error } = useFetch<TimeSeriesDailyResponse>(
-    timeSeriesDailyURL(query)
-  );
-
   const [chartContainerRef, chartContainerSize] = useElementSize();
 
-  const stockData = useMemo(() => {
-    if (!data || 'Error Message' in data) {
-      return [];
-    }
+  const {
+    data: stockTimeSeries,
+    isError,
+    isLoading,
+  } = useQuery(['stock-time-series', query], () => getStockTimeSeries(query));
 
-    return mapTimeSeriesDailyToStockSeries(data['Time Series (Daily)']);
-  }, [data]);
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <div className='flex h-full items-center justify-center'>
+          <div role='status'>
+            <SpinnerIcon className='h-16 w-16 animate-spin fill-emerald-500 text-gray-200' />
+            <span className='sr-only'>Loading...</span>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 
-  if (error) {
+  if (isError) {
     return (
       <PageLayout>
         <div className='mx-auto max-w-screen-xl py-16 px-6'>
@@ -52,27 +54,6 @@ const StockPage = ({ query }: StockPageProps) => {
     );
   }
 
-  if (!data) {
-    return (
-      <PageLayout>
-        <div className='flex h-full items-center justify-center'>
-          <div role='status'>
-            <SpinnerIcon className='h-16 w-16 animate-spin fill-emerald-500 text-gray-200' />
-            <span className='sr-only'>Loading...</span>
-          </div>
-        </div>
-      </PageLayout>
-    );
-  }
-
-  if ('Error Message' in data) {
-    return (
-      <PageLayout>
-        <p>Invalid Symbol... Please try again</p>
-      </PageLayout>
-    );
-  }
-
   return (
     <PageLayout>
       <div className='flex h-full divide-x divide-gray-200'>
@@ -83,7 +64,7 @@ const StockPage = ({ query }: StockPageProps) => {
             className='flex h-full items-center justify-center'
           >
             <StockChart
-              data={stockData}
+              data={stockTimeSeries}
               width={chartContainerSize.width * 0.8}
             />
           </div>
@@ -106,30 +87,5 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
-
-const timeSeriesDailyURL = (symbol: string) => {
-  const searchParams = new URLSearchParams({
-    apikey: import.meta.env.VITE_ALPHA_VANTAGE_API_KEY,
-    function: 'TIME_SERIES_DAILY',
-    outputsize: 'compact',
-    symbol,
-  });
-
-  return `https://www.alphavantage.co/query?${searchParams.toString()}`;
-};
-
-export const mapTimeSeriesDailyToStockSeries = (
-  timeSeriesDaily: TimeSeriesDaily
-): StockDataPoint[] =>
-  sortBy(
-    entries(timeSeriesDaily).map(([day, data]) => ({
-      day: parseISO(day),
-      open: Number(data['1. open']),
-      hight: Number(data['2. high']),
-      low: Number(data['3. low']),
-      close: Number(data['4. close']),
-    })),
-    (point) => point.day
-  );
 
 export default StockPage;

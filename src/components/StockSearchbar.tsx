@@ -1,10 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 
 import useDebounce from '@hooks/useDebounce';
-import useFetch from '@hooks/useFetch';
+import searchStockSymbols from '@api/searchStocks';
 import Searchbar from './core/Searchbar';
-import type { StockSearchResponse } from 'types/StockSearchResponse';
 
 interface StockResult {
   symbol: string;
@@ -24,22 +24,11 @@ const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
   const [query, setQuery] = useState(searchParams.get('q') ?? '');
   const debouncedQuery = useDebounce(query, 275);
 
-  const { data } = useFetch<StockSearchResponse>(
-    debouncedQuery ? stockSearchURL(debouncedQuery) : undefined
+  const { data: searchResults } = useQuery(
+    ['stock-search', debouncedQuery],
+    () => searchStockSymbols(debouncedQuery),
+    { initialData: [], enabled: Boolean(debouncedQuery) }
   );
-
-  const results = useMemo(() => {
-    if (!data || 'Note' in data) {
-      return [];
-    }
-
-    return data.bestMatches.map(
-      (match): StockResult => ({
-        symbol: match['1. symbol'],
-        company: match['2. name'],
-      })
-    );
-  }, [data]);
 
   const handleItemSelect = (item: StockResult) => {
     setQuery(item.symbol);
@@ -52,7 +41,7 @@ const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
       <Searchbar
         name='q'
         value={query}
-        results={results}
+        results={searchResults}
         autoFocus={autoFocus}
         onItemSelect={handleItemSelect}
         onChange={setQuery}
@@ -65,16 +54,6 @@ const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
       />
     </form>
   );
-};
-
-const stockSearchURL = (query: string) => {
-  const searchParams = new URLSearchParams({
-    apikey: import.meta.env.VITE_ALPHA_VANTAGE_API_KEY,
-    function: 'SYMBOL_SEARCH',
-    keywords: query,
-  });
-
-  return `https://www.alphavantage.co/query?${searchParams.toString()}`;
 };
 
 export default StockSearchbar;

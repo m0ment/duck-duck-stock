@@ -23,6 +23,7 @@
     ]
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.2.3",
     "apexcharts": "^3.35.5",
     "classix": "^2.1.13",
     "date-fns": "^2.29.2",
