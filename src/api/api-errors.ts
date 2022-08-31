@@ -1,7 +1,9 @@
-export interface ApiError {
+export type WithApiErrors<T> = ApiError | ApiLimitError | T;
+
+interface ApiError {
   'Error Message': string;
 }
 
-export interface ApiLimitError {
+interface ApiLimitError {
   Note: string;
 }

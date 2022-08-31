@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns';
 import { entries, sortBy } from 'lodash';
 
-import { ApiError, ApiLimitError } from './api-errors';
+import { WithApiErrors } from './api-errors';
 
 async function getStockTimeSeries(symbol: string) {
   const response = await fetch(timeSeriesDailyURL(symbol));
@@ -10,7 +10,7 @@ async function getStockTimeSeries(symbol: string) {
     throw new Error(response.statusText);
   }
 
-  const data = (await response.json()) as TimeSeriesDailyResponse;
+  const data = (await response.json()) as WithApiErrors<TimeSeriesResponse>;
 
   if ('Error Message' in data) {
     throw new Error(data['Error Message']);
@@ -56,12 +56,7 @@ export interface StockDataPoint {
   close: number;
 }
 
-type TimeSeriesDailyResponse =
-  | ApiError
-  | ApiLimitError
-  | TimeSeriesDailySuccessResponse;
-
-interface TimeSeriesDailySuccessResponse {
+interface TimeSeriesResponse {
   'Meta Data': MetaData;
   'Time Series (Daily)': TimeSeriesDaily;
 }

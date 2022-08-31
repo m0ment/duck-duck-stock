@@ -1,4 +1,4 @@
-import type { ApiError, ApiLimitError } from './api-errors';
+import type { WithApiErrors } from './api-errors';
 
 async function searchStockSymbol(query: string) {
   const response = await fetch(symbolSearchURL(query));
@@ -7,7 +7,7 @@ async function searchStockSymbol(query: string) {
     throw new Error(response.statusText);
   }
 
-  const data = (await response.json()) as SymbolSearchResponse;
+  const data = (await response.json()) as WithApiErrors<SymbolSearchResponse>;
 
   if ('Error Message' in data) {
     throw new Error(data['Error Message']);
@@ -44,12 +44,7 @@ export interface StockSearchResult {
   company: string;
 }
 
-type SymbolSearchResponse =
-  | ApiError
-  | ApiLimitError
-  | StockSearchSuccessResponse;
-
-interface StockSearchSuccessResponse {
+interface SymbolSearchResponse {
   bestMatches: StockSearchMatch[];
 }
 
