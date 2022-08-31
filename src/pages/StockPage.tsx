@@ -3,10 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 import useElementSize from '@hooks/useElementSize';
+import getCompanyOverview from '@api/getCompanyOverview';
 import getStockTimeSeries from '@api/getStockTimeSeries';
 import { SpinnerIcon } from '@assets/icons';
 import StockChart from '@components/StockChart';
 import StockSearchbar from '@components/StockSearchbar';
+import StockOverview from '@components/StockOverview';
 
 interface StockPageProps {
   query: string;
@@ -15,11 +17,9 @@ interface StockPageProps {
 const StockPage = ({ query }: StockPageProps) => {
   const [chartContainerRef, chartContainerSize] = useElementSize();
 
-  const {
-    data: stockTimeSeries,
-    isError,
-    isLoading,
-  } = useQuery(['stock-time-series', query], () => getStockTimeSeries(query));
+  const { data, isError, isLoading } = useQuery(['stock-details', query], () =>
+    Promise.all([getCompanyOverview(query), getStockTimeSeries(query)])
+  );
 
   if (isLoading) {
     return (
@@ -54,11 +54,13 @@ const StockPage = ({ query }: StockPageProps) => {
     );
   }
 
+  const [companyOverview, stockTimeSeries] = data;
+
   return (
     <PageLayout>
       <div className='flex h-full divide-x divide-gray-200'>
-        <div className='w-96 pl-16 pt-4'>TODO</div>
-        <div className='flex-1  p-4'>
+        <StockOverview companyOverview={companyOverview} className='w-96 p-4' />
+        <div className='flex-1 p-4'>
           <div
             ref={chartContainerRef}
             className='flex h-full items-center justify-center'
