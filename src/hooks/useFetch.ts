@@ -12,7 +12,7 @@ type Action<T> =
 
 type Cache<T> = { [url: string]: T };
 
-const useFetch = <T>(url?: string) => {
+function useFetch<T>(url?: string) {
   const cache = useRef<Cache<T>>({});
 
   const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
@@ -77,6 +77,6 @@ const useFetch = <T>(url?: string) => {
   }, [url]);
 
   return state;
-};
+}
 
 export default useFetch;
