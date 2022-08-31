@@ -18,6 +18,10 @@ const HomePage = () => {
           <span className='text-gray-800'>DuckDuck</span>
           <span className='text-emerald-500'>Stock</span>
         </h1>
+        <p className='mt-12 text-lg font-light text-gray-500'>
+          Type a <span className='font-medium'>Stock Symbol</span> or search for
+          a <span className='font-medium'>Company Name</span>.
+        </p>
         <StockSearchbar autoFocus className='mt-4 w-[72%] max-w-lg' />
       </div>
     </main>
