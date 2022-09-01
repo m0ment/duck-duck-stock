@@ -22,7 +22,11 @@ const HomePage = () => {
           Type a <span className='font-medium'>Stock Symbol</span> or search for
           a <span className='font-medium'>Company Name</span>.
         </p>
-        <StockSearchbar autoFocus className='mt-4 w-[72%] max-w-lg' />
+        <StockSearchbar
+          placeholder='e.g. NFXL'
+          autoFocus
+          className='mt-4 w-[72%] max-w-lg'
+        />
       </div>
     </main>
   );

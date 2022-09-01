@@ -20,8 +20,10 @@ const StockPage = ({ symbol }: StockPageProps) => {
   const { data, error, isError, isLoading } = useQuery<
     [CompanyOverview, StockTimeSeries],
     Error
-  >(['stock-details', symbol], () =>
-    Promise.all([getCompanyOverview(symbol), getStockTimeSeries(symbol)])
+  >(
+    ['stock-details', symbol],
+    () => Promise.all([getCompanyOverview(symbol), getStockTimeSeries(symbol)]),
+    { staleTime: Infinity }
   );
 
   if (isLoading) {
@@ -84,7 +86,10 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
         <Link to='/' className='flex w-16 items-center justify-center py-[3px]'>
           <img src='/duck.svg' className='h-10 w-10' />
         </Link>
-        <StockSearchbar className='absolute top-4 ml-20 w-[72%] max-w-lg' />
+        <StockSearchbar
+          placeholder='Look for another stock'
+          className='absolute top-4 ml-20 w-[72%] max-w-lg'
+        />
       </header>
       <main className='flex-grow'>{children}</main>
     </div>

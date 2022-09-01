@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
 
 import useDebounce from '@hooks/useDebounce';
 import searchStockSymbols from '@api/searchStocks';
@@ -12,16 +11,19 @@ interface StockResult {
 }
 
 interface StockSearchbarProps {
+  placeholder?: string;
   autoFocus?: boolean;
   className?: string;
 }
 
-const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
-  const [searchParams] = useSearchParams();
-
+const StockSearchbar = ({
+  placeholder,
+  autoFocus,
+  className,
+}: StockSearchbarProps) => {
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [query, setQuery] = useState(searchParams.get('symbol') ?? '');
+  const [query, setQuery] = useState('');
   const debouncedQuery = useDebounce(query, 275);
 
   const { data: searchResults } = useQuery(
@@ -42,6 +44,7 @@ const StockSearchbar = ({ autoFocus, className }: StockSearchbarProps) => {
         name='symbol'
         value={query}
         results={searchResults}
+        placeholder={placeholder}
         autoFocus={autoFocus}
         onItemSelect={handleItemSelect}
         onChange={setQuery}
