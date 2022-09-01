@@ -1,0 +1,16 @@
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-background-color: #a7f3d0;
+  /* Outline border for focused elements */
+  --rdp-outline: none;
+  /* Outline border for focused and selected elements */
+  --rdp-outline-selected: none;
+}
+
+.rdp-day_selected:not([disabled]),
+.rdp-day_selected:focus:not([disabled]),
+.rdp-day_selected:active:not([disabled]),
+.rdp-day_selected:hover:not([disabled]) {
+  color: inherit;
+  background-color: var(--rdp-background-color);
+}
