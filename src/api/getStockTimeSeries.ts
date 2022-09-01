@@ -1,9 +1,9 @@
 import { parseISO } from 'date-fns';
-import { entries, sortBy } from 'lodash';
+import { entries, first, last, sortBy } from 'lodash';
 
 import { WithApiErrors } from './api-errors';
 
-async function getStockTimeSeries(symbol: string) {
+async function getStockTimeSeries(symbol: string): Promise<StockTimeSeries> {
   const response = await fetch(timeSeriesDailyURL(symbol));
 
   if (!response.ok) {
@@ -20,17 +20,26 @@ async function getStockTimeSeries(symbol: string) {
     throw new Error(data['Note']);
   }
 
-  const stockTimeSeries = entries(data['Time Series (Daily)']).map(
-    ([day, data]): StockDataPoint => ({
-      day: parseISO(day),
-      open: Number(data['1. open']),
-      hight: Number(data['2. high']),
-      low: Number(data['3. low']),
-      close: Number(data['4. close']),
-    })
+  const stockDataPoints = sortBy(
+    entries(data['Time Series (Daily)']).map(
+      ([day, data]): StockDataPoint => ({
+        day: parseISO(day),
+        open: Number(data['1. open']),
+        hight: Number(data['2. high']),
+        low: Number(data['3. low']),
+        close: Number(data['4. close']),
+      })
+    ),
+    (dataPoint) => dataPoint.day
   );
 
-  return sortBy(stockTimeSeries, (dataPoint) => dataPoint.day);
+  return {
+    meta: {
+      startDate: first(stockDataPoints)?.day ?? new Date(),
+      endDate: last(stockDataPoints)?.day ?? new Date(),
+    },
+    data: stockDataPoints,
+  };
 }
 
 function timeSeriesDailyURL(symbol: string) {
@@ -47,6 +56,16 @@ function timeSeriesDailyURL(symbol: string) {
 export default getStockTimeSeries;
 
 /* Types */
+
+export interface StockTimeSeries {
+  meta: TimeSeriesMetaData;
+  data: StockDataPoint[];
+}
+
+export interface TimeSeriesMetaData {
+  startDate: Date;
+  endDate: Date;
+}
 
 export interface StockDataPoint {
   day: Date;
