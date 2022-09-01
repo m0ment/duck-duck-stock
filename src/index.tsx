@@ -9,7 +9,7 @@ import './index.css';
 
 // Create a client
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+  defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false } },
 });
 
 const root = ReactDOM.createRoot(
