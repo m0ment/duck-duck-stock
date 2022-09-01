@@ -21,7 +21,8 @@
       "@assets/*": ["assets/*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+      "@styles/*": ["styles/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
