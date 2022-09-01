@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
 import useElementSize from '@hooks/useElementSize';
-import getCompanyOverview from '@api/getCompanyOverview';
-import getStockTimeSeries from '@api/getStockTimeSeries';
+import getCompanyOverview, { CompanyOverview } from '@api/getCompanyOverview';
+import getStockTimeSeries, { StockTimeSeries } from '@api/getStockTimeSeries';
 import { SpinnerIcon } from '@assets/icons';
 import StockChart from '@components/StockChart';
 import StockSearchbar from '@components/StockSearchbar';
@@ -17,7 +17,10 @@ interface StockPageProps {
 const StockPage = ({ symbol }: StockPageProps) => {
   const [chartContainerRef, chartContainerSize] = useElementSize();
 
-  const { data, isError, isLoading } = useQuery(['stock-details', symbol], () =>
+  const { data, error, isError, isLoading } = useQuery<
+    [CompanyOverview, StockTimeSeries],
+    Error
+  >(['stock-details', symbol], () =>
     Promise.all([getCompanyOverview(symbol), getStockTimeSeries(symbol)])
   );
 
@@ -37,18 +40,16 @@ const StockPage = ({ symbol }: StockPageProps) => {
   if (isError) {
     return (
       <PageLayout>
-        <div className='mx-auto max-w-screen-xl py-16 px-6'>
-          <div className='mx-auto max-w-screen-sm text-center'>
-            <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-emerald-500'>
-              500
-            </h1>
-            <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900'>
-              Something didn&apos;t work quite well.
-            </p>
-            <p className='mb-4 text-lg font-light text-gray-500'>
-              Maybe next time you will be more lucky.
-            </p>
-          </div>
+        <div className='mx-auto max-w-screen-lg py-16 px-6 text-center'>
+          <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-emerald-500'>
+            500
+          </h1>
+          <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900'>
+            Oh duck!
+          </p>
+          <p className='mb-4 whitespace-pre-line text-lg font-light text-gray-500'>
+            {error.message}
+          </p>
         </div>
       </PageLayout>
     );

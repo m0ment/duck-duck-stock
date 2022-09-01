@@ -1,4 +1,4 @@
-import { WithApiErrors } from './api-errors';
+import { LimitErrorMessage, WithApiErrors } from './api-errors';
 
 async function getCompanyOverview(symbol: string): Promise<CompanyOverview> {
   const response = await fetch(companyOverviewURL(symbol));
@@ -15,7 +15,7 @@ async function getCompanyOverview(symbol: string): Promise<CompanyOverview> {
   }
 
   if ('Note' in data) {
-    throw new Error(data['Note']);
+    throw new Error(LimitErrorMessage);
   }
 
   return {

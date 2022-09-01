@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns';
 import { entries, first, last, sortBy } from 'lodash';
 
-import { WithApiErrors } from './api-errors';
+import { LimitErrorMessage, WithApiErrors } from './api-errors';
 
 async function getStockTimeSeries(symbol: string): Promise<StockTimeSeries> {
   const response = await fetch(timeSeriesDailyURL(symbol));
@@ -17,7 +17,7 @@ async function getStockTimeSeries(symbol: string): Promise<StockTimeSeries> {
   }
 
   if ('Note' in data) {
-    throw new Error(data['Note']);
+    throw new Error(LimitErrorMessage);
   }
 
   const stockDataPoints = sortBy(
