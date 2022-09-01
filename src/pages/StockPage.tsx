@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
@@ -6,11 +6,9 @@ import useElementSize from '@hooks/useElementSize';
 import getCompanyOverview from '@api/getCompanyOverview';
 import getStockTimeSeries from '@api/getStockTimeSeries';
 import { SpinnerIcon } from '@assets/icons';
-import DateRangePicker from '@components/core/DateRangePicker';
 import StockChart from '@components/StockChart';
 import StockSearchbar from '@components/StockSearchbar';
 import StockOverview from '@components/StockOverview';
-import { isInRange } from '@utils/date';
 
 interface StockPageProps {
   symbol: string;
@@ -22,31 +20,6 @@ const StockPage = ({ symbol }: StockPageProps) => {
   const { data, isError, isLoading } = useQuery(['stock-details', symbol], () =>
     Promise.all([getCompanyOverview(symbol), getStockTimeSeries(symbol)])
   );
-
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
-
-  const filteredStockTimeSeries = useMemo(() => {
-    if (!data) {
-      return [];
-    }
-
-    const stockTimeSeries = data[1];
-
-    return stockTimeSeries.data.filter((dataPoint) =>
-      isInRange(dataPoint.day, fromDate, toDate)
-    );
-  }, [data, fromDate, toDate]);
-
-  useEffect(() => {
-    if (!data) return;
-
-    const stockTimeSeries = data[1];
-
-    // Set From and To Date when data changes
-    setFromDate(stockTimeSeries.meta.startDate);
-    setToDate(stockTimeSeries.meta.endDate);
-  }, [data]);
 
   if (isLoading) {
     return (
@@ -83,11 +56,6 @@ const StockPage = ({ symbol }: StockPageProps) => {
 
   const [companyOverview, stockTimeSeries] = data;
 
-  const resetDates = () => {
-    setFromDate(stockTimeSeries.meta.startDate);
-    setToDate(stockTimeSeries.meta.endDate);
-  };
-
   return (
     <PageLayout>
       <div className='flex h-full divide-x divide-gray-200'>
@@ -97,32 +65,10 @@ const StockPage = ({ symbol }: StockPageProps) => {
             ref={chartContainerRef}
             className='flex h-full flex-col items-center justify-center'
           >
-            <div>
-              <div className='mb-2 flex items-center gap-x-4'>
-                <DateRangePicker
-                  fromDate={fromDate}
-                  toDate={toDate}
-                  startDate={stockTimeSeries.meta.startDate}
-                  endDate={stockTimeSeries.meta.endDate}
-                  onFromDateChange={setFromDate}
-                  onToDateChange={setToDate}
-                />
-                <button
-                  className='h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm font-medium text-red-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400'
-                  onClick={resetDates}
-                  disabled={
-                    fromDate === stockTimeSeries.meta.startDate &&
-                    toDate === stockTimeSeries.meta.endDate
-                  }
-                >
-                  Reset Dates
-                </button>
-              </div>
-              <StockChart
-                data={filteredStockTimeSeries}
-                width={chartContainerSize.width * 0.8}
-              />
-            </div>
+            <StockChart
+              stockTimeSeries={stockTimeSeries}
+              width={chartContainerSize.width * 0.8}
+            />
           </div>
         </div>
       </div>

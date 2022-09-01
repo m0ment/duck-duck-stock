@@ -1,46 +1,87 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import ReactApexChart from 'react-apexcharts';
 import { format } from 'date-fns';
-import { StockDataPoint } from '@api/getStockTimeSeries';
 
-interface ApexDataPoint {
-  x: Date;
-  y: [number, number, number, number];
-}
+import DateRangePicker from './core/DateRangePicker';
+import type { StockTimeSeries } from '@api/getStockTimeSeries';
+import { isEqual, isInRange } from '@utils/date';
 
-interface CandlestickChartProps {
-  data: StockDataPoint[];
+interface StockChartProps {
+  stockTimeSeries: StockTimeSeries;
   width?: number;
 }
 
-const StockChart = ({ data, width }: CandlestickChartProps) => {
+const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
+  const { meta, data } = stockTimeSeries;
+
+  const [fromDate, setFromDate] = useState(meta.startDate);
+  const [toDate, setToDate] = useState(meta.endDate);
+
   const options = useChartOptions({ showAvgPrice: true });
 
-  const series = useMemo(
+  const series = useMemo<ApexAxisChartSeries>(
     (): ApexAxisChartSeries => [
       {
-        data: data.map((point) => ({
-          x: point.day,
-          y: [point.open, point.hight, point.low, point.close],
-        })),
+        data: data
+          .filter((dataPoint) => isInRange(dataPoint.day, fromDate, toDate))
+          .map((dataPoint) => ({
+            x: dataPoint.day,
+            y: [
+              dataPoint.open,
+              dataPoint.hight,
+              dataPoint.low,
+              dataPoint.close,
+            ],
+          })),
       },
     ],
-    [data]
+    [data, fromDate, toDate]
   );
 
+  const handleResetDatesClick = () => {
+    setFromDate(meta.startDate);
+    setToDate(meta.endDate);
+  };
+
   return (
-    <ReactApexChart
-      type='candlestick'
-      options={options}
-      series={series}
-      width={width ? `${width}px` : '100%'}
-    />
+    <div>
+      <div className='mb-2'>
+        <DateRangePicker
+          fromDate={fromDate}
+          toDate={toDate}
+          startDate={stockTimeSeries.meta.startDate}
+          endDate={stockTimeSeries.meta.endDate}
+          onFromDateChange={setFromDate}
+          onToDateChange={setToDate}
+        />
+        <button
+          className='ml-4 h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm font-medium text-red-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400'
+          onClick={handleResetDatesClick}
+          disabled={
+            isEqual(fromDate, meta.startDate) && isEqual(toDate, meta.endDate)
+          }
+        >
+          Reset Dates
+        </button>
+      </div>
+      <ReactApexChart
+        type='candlestick'
+        options={options}
+        series={series}
+        width={width ? `${width}px` : '100%'}
+      />
+    </div>
   );
 };
 
 interface ChartOptions {
   showAvgPrice?: boolean;
+}
+
+interface ApexDataPoint {
+  x: Date;
+  y: [number, number, number, number];
 }
 
 const useChartOptions = ({ showAvgPrice }: ChartOptions) => {
