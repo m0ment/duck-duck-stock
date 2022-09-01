@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import ReactApexChart from 'react-apexcharts';
 import { format } from 'date-fns';
 
+import Checkbox from './core/Checkbox';
 import DateRangePicker from './core/DateRangePicker';
 import type { StockTimeSeries } from '@api/getStockTimeSeries';
 import { isEqual, isInRange } from '@utils/date';
@@ -15,10 +16,14 @@ interface StockChartProps {
 const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
   const { meta, data } = stockTimeSeries;
 
+  const chartRef = useRef<ReactApexChart>(null);
+
   const [fromDate, setFromDate] = useState(meta.startDate);
   const [toDate, setToDate] = useState(meta.endDate);
 
-  const options = useChartOptions({ showAvgPrice: true });
+  const [showAvgPrices, setShowAvgPrices] = useState(true);
+
+  const options = useChartOptions({ showAvgPrices });
 
   const series = useMemo<ApexAxisChartSeries>(
     (): ApexAxisChartSeries => [
@@ -39,6 +44,12 @@ const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
     [data, fromDate, toDate]
   );
 
+  useEffect(() => {
+    // FIXME: This workaround is because the ReactApexChart doesn't update the options
+    const chartComp = chartRef.current as any;
+    (chartComp?.chart as ApexCharts).updateOptions(options);
+  }, [options]);
+
   const handleResetDatesClick = () => {
     setFromDate(meta.startDate);
     setToDate(meta.endDate);
@@ -46,26 +57,38 @@ const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
 
   return (
     <div>
-      <div className='mb-2'>
-        <DateRangePicker
-          fromDate={fromDate}
-          toDate={toDate}
-          startDate={stockTimeSeries.meta.startDate}
-          endDate={stockTimeSeries.meta.endDate}
-          onFromDateChange={setFromDate}
-          onToDateChange={setToDate}
-        />
-        <button
-          className='ml-4 h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm font-medium text-red-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400'
-          onClick={handleResetDatesClick}
-          disabled={
-            isEqual(fromDate, meta.startDate) && isEqual(toDate, meta.endDate)
-          }
-        >
-          Reset Dates
-        </button>
+      <div className='inline-flex items-center divide-x-2 divide-gray-200'>
+        {/* Date Range Filters */}
+        <div className='pr-4'>
+          <DateRangePicker
+            fromDate={fromDate}
+            toDate={toDate}
+            startDate={stockTimeSeries.meta.startDate}
+            endDate={stockTimeSeries.meta.endDate}
+            onFromDateChange={setFromDate}
+            onToDateChange={setToDate}
+          />
+          <button
+            className='ml-4 h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm font-medium text-red-500 hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400'
+            onClick={handleResetDatesClick}
+            disabled={
+              isEqual(fromDate, meta.startDate) && isEqual(toDate, meta.endDate)
+            }
+          >
+            Reset Dates
+          </button>
+        </div>
+        <div className='pl-4'>
+          <div className='inline-flex items-center gap-x-1.5'>
+            <Checkbox checked={showAvgPrices} onChange={setShowAvgPrices} />
+            <span className='text-sm font-medium text-gray-900'>
+              Show Avarage Prices
+            </span>
+          </div>
+        </div>
       </div>
       <ReactApexChart
+        ref={chartRef}
         type='candlestick'
         options={options}
         series={series}
@@ -75,16 +98,12 @@ const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
   );
 };
 
-interface ChartOptions {
-  showAvgPrice?: boolean;
-}
-
 interface ApexDataPoint {
   x: Date;
   y: [number, number, number, number];
 }
 
-const useChartOptions = ({ showAvgPrice }: ChartOptions) => {
+const useChartOptions = ({ showAvgPrices }: { showAvgPrices?: boolean }) => {
   return useMemo<ApexOptions>(
     () => ({
       chart: {
@@ -145,7 +164,7 @@ const useChartOptions = ({ showAvgPrice }: ChartOptions) => {
                 ${priceView('C:', close)}
               </ul>
               ${
-                showAvgPrice
+                showAvgPrices
                   ? `
                   <div>
                     <span>AVG:<span>
@@ -181,7 +200,7 @@ const useChartOptions = ({ showAvgPrice }: ChartOptions) => {
         },
       },
     }),
-    [showAvgPrice]
+    [showAvgPrices]
   );
 };
 
