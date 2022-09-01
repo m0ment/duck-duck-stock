@@ -84,6 +84,7 @@ const Searchbar = <T,>({
           ref={inputRef}
           type='text'
           name={name}
+          autoComplete='off'
           placeholder={placeholder}
           className='h-full flex-1 border-0 bg-transparent p-0 pl-4 text-gray-900 placeholder:text-gray-400 focus:ring-0'
           value={value}
