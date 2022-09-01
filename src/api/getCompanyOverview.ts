@@ -49,6 +49,8 @@ export interface CompanyOverview {
   industry: string;
 }
 
+/* Response */
+
 interface CompanyOverviewResponse {
   Symbol: string;
   AssetType: string;
