@@ -45,10 +45,10 @@ const StockChart = ({ stockTimeSeries, className }: StockChartProps) => {
   );
 
   useEffect(() => {
-    // FIXME: This workaround is because the ReactApexChart doesn't update the options
+    // FIXME: This workaround is because ReactApexChart doesn't update the options
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const chartComp = chartRef.current as any;
-    (chartComp?.chart as ApexCharts).updateOptions(options);
+    (chartComp?.chart as ApexCharts)?.updateOptions(options);
   }, [options]);
 
   const handleResetDatesClick = () => {
