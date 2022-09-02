@@ -19,11 +19,10 @@ async function getCompanyOverview(symbol: string): Promise<CompanyOverview> {
   }
 
   return {
-    symbol: data.Symbol,
-    name: data.Name,
-    description: data.Description,
-    sector: data.Sector,
-    industry: data.Industry,
+    name: data?.Name,
+    description: data?.Description,
+    sector: data?.Sector,
+    industry: data?.Industry,
   };
 }
 
@@ -42,60 +41,59 @@ export default getCompanyOverview;
 /* Types */
 
 export interface CompanyOverview {
-  symbol: string;
-  name: string;
-  description: string;
-  sector: string;
-  industry: string;
+  name?: string;
+  description?: string;
+  sector?: string;
+  industry?: string;
 }
 
 /* Response */
 
 interface CompanyOverviewResponse {
-  Symbol: string;
-  AssetType: string;
-  Name: string;
-  Description: string;
-  CIK: string;
-  Exchange: string;
-  Currency: string;
-  Country: string;
-  Sector: string;
-  Industry: string;
-  Address: string;
-  FiscalYearEnd: string;
-  LatestQuarter: string;
-  MarketCapitalization: string;
-  EBITDA: string;
-  PERatio: string;
-  PEGRatio: string;
-  BookValue: string;
-  DividendPerShare: string;
-  DividendYield: string;
-  EPS: string;
-  RevenuePerShareTTM: string;
-  ProfitMargin: string;
-  OperatingMarginTTM: string;
-  ReturnOnAssetsTTM: string;
-  ReturnOnEquityTTM: string;
-  RevenueTTM: string;
-  GrossProfitTTM: string;
-  DilutedEPSTTM: string;
-  QuarterlyEarningsGrowthYOY: string;
-  QuarterlyRevenueGrowthYOY: string;
-  AnalystTargetPrice: string;
-  TrailingPE: string;
-  ForwardPE: string;
-  PriceToSalesRatioTTM: string;
-  PriceToBookRatio: string;
-  EVToRevenue: string;
-  EVToEBITDA: string;
-  Beta: string;
-  '52WeekHigh': string;
-  '52WeekLow': string;
-  '50DayMovingAverage': string;
-  '200DayMovingAverage': string;
-  SharesOutstanding: string;
-  DividendDate: string;
-  ExDividendDate: string;
+  Symbol?: string;
+  AssetType?: string;
+  Name?: string;
+  Description?: string;
+  CIK?: string;
+  Exchange?: string;
+  Currency?: string;
+  Country?: string;
+  Sector?: string;
+  Industry?: string;
+  Address?: string;
+  FiscalYearEnd?: string;
+  LatestQuarter?: string;
+  MarketCapitalization?: string;
+  EBITDA?: string;
+  PERatio?: string;
+  PEGRatio?: string;
+  BookValue?: string;
+  DividendPerShare?: string;
+  DividendYield?: string;
+  EPS?: string;
+  RevenuePerShareTTM?: string;
+  ProfitMargin?: string;
+  OperatingMarginTTM?: string;
+  ReturnOnAssetsTTM?: string;
+  ReturnOnEquityTTM?: string;
+  RevenueTTM?: string;
+  GrossProfitTTM?: string;
+  DilutedEPSTTM?: string;
+  QuarterlyEarningsGrowthYOY?: string;
+  QuarterlyRevenueGrowthYOY?: string;
+  AnalystTargetPrice?: string;
+  TrailingPE?: string;
+  ForwardPE?: string;
+  PriceToSalesRatioTTM?: string;
+  PriceToBookRatio?: string;
+  EVToRevenue?: string;
+  EVToEBITDA?: string;
+  Beta?: string;
+  '52WeekHigh'?: string;
+  '52WeekLow'?: string;
+  '50DayMovingAverage'?: string;
+  '200DayMovingAverage'?: string;
+  SharesOutstanding?: string;
+  DividendDate?: string;
+  ExDividendDate?: string;
 }

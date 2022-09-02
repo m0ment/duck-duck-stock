@@ -62,7 +62,11 @@ const StockPage = ({ symbol }: StockPageProps) => {
   return (
     <PageLayout>
       <div className='flex h-full divide-x divide-gray-200'>
-        <StockOverview companyOverview={companyOverview} className='w-96 p-4' />
+        <StockOverview
+          symbol={symbol}
+          companyOverview={companyOverview}
+          className='w-96 p-4'
+        />
         <div className='flex-1 p-4'>
           <div
             ref={chartContainerRef}
