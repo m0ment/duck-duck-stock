@@ -45,7 +45,7 @@ const StockSearchbar = ({
       loading={isFetching}
       displayValue={(stock) => stock?.symbol ?? ''}
       onChange={handleOptionSelect}
-      inputValue={query}
+      inputValue={debouncedQuery}
       onInputChange={setQuery}
       options={searchResults}
       renderOption={(item, { active }) => (
