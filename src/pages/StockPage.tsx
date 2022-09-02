@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 
@@ -27,64 +26,6 @@ const StockPage = ({ symbol }: StockPageProps) => {
     { staleTime: Infinity }
   );
 
-  if (isLoading) {
-    return (
-      <PageLayout>
-        <div className='flex h-full items-center justify-center'>
-          <div role='status'>
-            <SpinnerIcon className='h-16 w-16 animate-spin fill-emerald-500 text-gray-200' />
-            <span className='sr-only'>Loading...</span>
-          </div>
-        </div>
-      </PageLayout>
-    );
-  }
-
-  if (isError) {
-    return (
-      <PageLayout>
-        <div className='mx-auto max-w-screen-lg py-16 px-6 text-center'>
-          <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-emerald-500'>
-            {error.statusCode}
-          </h1>
-          <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900'>
-            Oh duck!
-          </p>
-          <p className='mb-4 whitespace-pre-line text-lg font-light text-gray-500'>
-            {error.message}
-          </p>
-        </div>
-      </PageLayout>
-    );
-  }
-
-  const [companyOverview, stockTimeSeries] = data;
-
-  return (
-    <PageLayout>
-      <div className='flex h-full divide-x divide-gray-200'>
-        <StockOverview
-          symbol={symbol}
-          companyOverview={companyOverview}
-          className='w-96 p-4'
-        />
-        <div className='flex-1 p-4'>
-          <div
-            ref={chartContainerRef}
-            className='flex h-full flex-col items-center justify-center'
-          >
-            <StockChart
-              stockTimeSeries={stockTimeSeries}
-              width={chartContainerSize.width * 0.8}
-            />
-          </div>
-        </div>
-      </div>
-    </PageLayout>
-  );
-};
-
-const PageLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className='flex h-screen w-screen flex-col divide-y divide-gray-200 bg-white'>
       <header className='relative py-4 pl-16'>
@@ -96,7 +37,49 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
           className='absolute top-4 z-10 ml-20 w-[72%] max-w-lg'
         />
       </header>
-      <main className='flex-grow'>{children}</main>
+      <main className='flex-grow'>
+        {isLoading && (
+          <div className='flex h-full items-center justify-center'>
+            <div role='status'>
+              <SpinnerIcon className='h-16 w-16 animate-spin fill-emerald-500 text-gray-200' />
+              <span className='sr-only'>Loading...</span>
+            </div>
+          </div>
+        )}
+        {isError && (
+          <div className='mx-auto max-w-screen-lg py-16 px-6 text-center'>
+            <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-emerald-500'>
+              {error.statusCode}
+            </h1>
+            <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900'>
+              Oh duck!
+            </p>
+            <p className='mb-4 whitespace-pre-line text-lg font-light text-gray-500'>
+              {error.message}
+            </p>
+          </div>
+        )}
+        {data && (
+          <div className='flex h-full divide-x divide-gray-200'>
+            <StockOverview
+              symbol={symbol}
+              companyOverview={data[0]}
+              className='w-96 p-4'
+            />
+            <div className='flex-1 p-4'>
+              <div
+                ref={chartContainerRef}
+                className='flex h-full flex-col items-center justify-center'
+              >
+                <StockChart
+                  stockTimeSeries={data[1]}
+                  width={chartContainerSize.width * 0.8}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 };
