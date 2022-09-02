@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 import useElementSize from '@hooks/useElementSize';
 import getCompanyOverview, { CompanyOverview } from '@api/getCompanyOverview';
@@ -33,8 +33,8 @@ const StockPage = ({ symbol }: StockPageProps) => {
           <img src='/duck.svg' className='h-10 w-10' />
         </Link>
         <StockSearchbar
-          placeholder='Look for another stock'
           className='absolute top-4 z-10 ml-20 w-[72%] max-w-lg'
+          placeholder='Look for another stock'
         />
       </header>
       <main className='flex-grow'>

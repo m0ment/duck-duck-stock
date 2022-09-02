@@ -1,7 +1,7 @@
 import { FC, SVGProps, useEffect, useRef } from 'react';
+import { Combobox } from '@headlessui/react';
 import cx from 'classix';
 
-import { Combobox } from '@headlessui/react';
 import { SpinnerIcon } from '@assets/icons';
 
 interface AutocompleteProps<T> {

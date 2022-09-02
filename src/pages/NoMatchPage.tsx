@@ -17,7 +17,7 @@ const NoMatchPage = () => {
           <Link
             to='/'
             replace
-            className='mt-4 inline-flex rounded-xl bg-emerald-500 px-4 py-3 text-center text-sm font-medium text-white hover:bg-emerald-600 focus:outline-none focus:ring-4 focus:ring-emerald-300'
+            className='mt-4 inline-flex rounded-xl bg-emerald-500 px-4 py-2 text-center text-sm font-medium text-white hover:bg-emerald-600 focus:outline-none'
           >
             Back to Homepage
           </Link>

@@ -46,6 +46,7 @@ const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
 
   useEffect(() => {
     // FIXME: This workaround is because the ReactApexChart doesn't update the options
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const chartComp = chartRef.current as any;
     (chartComp?.chart as ApexCharts).updateOptions(options);
   }, [options]);
