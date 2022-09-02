@@ -23,9 +23,9 @@ const HomePage = () => {
           a <span className='font-medium'>Company Name</span>.
         </p>
         <StockSearchbar
-          placeholder='e.g. NFXL'
-          autoFocus
           className='mt-4 w-[72%] max-w-lg'
+          placeholder='e.g. NFXL'
+          initialFocus
         />
       </div>
     </main>
