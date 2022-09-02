@@ -58,7 +58,7 @@ const StockChart = ({ stockTimeSeries, className }: StockChartProps) => {
 
   return (
     <div className={className}>
-      <div className='inline-flex items-center divide-x-2 divide-gray-200'>
+      <div className='ml-24 inline-flex items-center divide-x-2 divide-gray-200'>
         {/* Date Range Filters */}
         <div className='pr-4'>
           <DateRangePicker
