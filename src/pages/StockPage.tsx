@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-import useElementSize from '@hooks/useElementSize';
 import getCompanyOverview, { CompanyOverview } from '@api/getCompanyOverview';
 import getStockTimeSeries, { StockTimeSeries } from '@api/getStockTimeSeries';
 import { ApiError } from '@api/errors';
@@ -15,8 +14,6 @@ interface StockPageProps {
 }
 
 const StockPage = ({ symbol }: StockPageProps) => {
-  const [chartContainerRef, chartContainerSize] = useElementSize();
-
   const { data, error, isError, isLoading } = useQuery<
     [CompanyOverview, StockTimeSeries],
     ApiError
@@ -66,16 +63,8 @@ const StockPage = ({ symbol }: StockPageProps) => {
               companyOverview={data[0]}
               className='w-96 p-4'
             />
-            <div className='flex-1 p-4'>
-              <div
-                ref={chartContainerRef}
-                className='flex h-full flex-col items-center justify-center'
-              >
-                <StockChart
-                  stockTimeSeries={data[1]}
-                  width={chartContainerSize.width * 0.8}
-                />
-              </div>
+            <div className='flex flex-1 items-center justify-center'>
+              <StockChart className='w-[80%]' stockTimeSeries={data[1]} />
             </div>
           </div>
         )}

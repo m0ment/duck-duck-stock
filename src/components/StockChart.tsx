@@ -10,10 +10,10 @@ import { isEqual, isInRange } from '@utils/date';
 
 interface StockChartProps {
   stockTimeSeries: StockTimeSeries;
-  width?: number;
+  className?: string;
 }
 
-const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
+const StockChart = ({ stockTimeSeries, className }: StockChartProps) => {
   const { meta, data } = stockTimeSeries;
 
   const chartRef = useRef<ReactApexChart>(null);
@@ -57,7 +57,7 @@ const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
   };
 
   return (
-    <div>
+    <div className={className}>
       <div className='inline-flex items-center divide-x-2 divide-gray-200'>
         {/* Date Range Filters */}
         <div className='pr-4'>
@@ -93,7 +93,6 @@ const StockChart = ({ stockTimeSeries, width }: StockChartProps) => {
         type='candlestick'
         options={options}
         series={series}
-        width={width ? `${width}px` : '100%'}
       />
     </div>
   );
