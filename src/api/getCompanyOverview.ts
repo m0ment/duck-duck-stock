@@ -1,4 +1,9 @@
-import { LimitErrorMessage, WithApiErrors } from './api-errors';
+import {
+  ApiError,
+  LimitErrorMessage,
+  SymbolNotFoundMessage,
+  WithApiErrors,
+} from './errors';
 
 async function getCompanyOverview(symbol: string): Promise<CompanyOverview> {
   const response = await fetch(companyOverviewURL(symbol));
@@ -11,11 +16,11 @@ async function getCompanyOverview(symbol: string): Promise<CompanyOverview> {
     (await response.json()) as WithApiErrors<CompanyOverviewResponse>;
 
   if ('Error Message' in data) {
-    throw new Error(data['Error Message']);
+    throw new ApiError(SymbolNotFoundMessage, 404);
   }
 
   if ('Note' in data) {
-    throw new Error(LimitErrorMessage);
+    throw new ApiError(LimitErrorMessage, 500);
   }
 
   return {

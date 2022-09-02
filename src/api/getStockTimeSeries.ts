@@ -1,7 +1,12 @@
 import { parseISO } from 'date-fns';
 import { entries, first, last, sortBy } from 'lodash';
 
-import { LimitErrorMessage, WithApiErrors } from './api-errors';
+import {
+  ApiError,
+  LimitErrorMessage,
+  SymbolNotFoundMessage,
+  WithApiErrors,
+} from './errors';
 
 async function getStockTimeSeries(symbol: string): Promise<StockTimeSeries> {
   const response = await fetch(timeSeriesDailyURL(symbol));
@@ -13,11 +18,11 @@ async function getStockTimeSeries(symbol: string): Promise<StockTimeSeries> {
   const data = (await response.json()) as WithApiErrors<TimeSeriesResponse>;
 
   if ('Error Message' in data) {
-    throw new Error(data['Error Message']);
+    throw new ApiError(SymbolNotFoundMessage, 404);
   }
 
   if ('Note' in data) {
-    throw new Error(LimitErrorMessage);
+    throw new ApiError(LimitErrorMessage, 500);
   }
 
   const stockDataPoints = sortBy(

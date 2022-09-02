@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import useElementSize from '@hooks/useElementSize';
 import getCompanyOverview, { CompanyOverview } from '@api/getCompanyOverview';
 import getStockTimeSeries, { StockTimeSeries } from '@api/getStockTimeSeries';
+import { ApiError } from '@api/errors';
 import { SpinnerIcon } from '@assets/icons';
 import StockChart from '@components/StockChart';
 import StockSearchbar from '@components/StockSearchbar';
@@ -19,7 +20,7 @@ const StockPage = ({ symbol }: StockPageProps) => {
 
   const { data, error, isError, isLoading } = useQuery<
     [CompanyOverview, StockTimeSeries],
-    Error
+    ApiError
   >(
     ['stock-details', symbol],
     () => Promise.all([getCompanyOverview(symbol), getStockTimeSeries(symbol)]),
@@ -44,7 +45,7 @@ const StockPage = ({ symbol }: StockPageProps) => {
       <PageLayout>
         <div className='mx-auto max-w-screen-lg py-16 px-6 text-center'>
           <h1 className='mb-4 text-7xl font-extrabold tracking-tight text-emerald-500'>
-            500
+            {error.statusCode}
           </h1>
           <p className='mb-4 text-3xl font-bold tracking-tight text-gray-900'>
             Oh duck!

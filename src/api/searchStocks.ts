@@ -1,4 +1,4 @@
-import { LimitErrorMessage, WithApiErrors } from './api-errors';
+import { ApiError, LimitErrorMessage, WithApiErrors } from './errors';
 
 async function searchStockSymbol(query: string) {
   const response = await fetch(symbolSearchURL(query));
@@ -10,11 +10,11 @@ async function searchStockSymbol(query: string) {
   const data = (await response.json()) as WithApiErrors<SymbolSearchResponse>;
 
   if ('Error Message' in data) {
-    throw new Error(data['Error Message']);
+    throw new ApiError(data['Error Message'], 500);
   }
 
   if ('Note' in data) {
-    throw new Error(LimitErrorMessage);
+    throw new ApiError(LimitErrorMessage, 500);
   }
 
   return data.bestMatches.map(
