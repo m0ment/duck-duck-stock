@@ -93,7 +93,7 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
         </Link>
         <StockSearchbar
           placeholder='Look for another stock'
-          className='absolute top-4 ml-20 w-[72%] max-w-lg'
+          className='absolute top-4 z-10 ml-20 w-[72%] max-w-lg'
         />
       </header>
       <main className='flex-grow'>{children}</main>
